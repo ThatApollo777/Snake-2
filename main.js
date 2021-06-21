@@ -18,30 +18,33 @@ $(document).ready(function () {
     $(document).on('keydown', function (k) {
         if (press) {
             if (k.keyCode == keyCodes.left) {
-                if (speed.x !== 1) {
+                if (speed.x == 0) {
                     speed.x = -1;
                     speed.y = 0;
+                    press = false;
                 }
             }
             if (k.keyCode == keyCodes.up) {
-                if (speed.y !== 1) {
+                if (speed.y == 0) {
                     speed.x = 0;
                     speed.y = -1;
+                    press = false;
                 }
             }
             if (k.keyCode == keyCodes.right) {
-                if (speed.x !== -1) {
+                if (speed.x == 0) {
                     speed.x = 1;
                     speed.y = 0;
+                    press = false;
                 }
             }
             if (k.keyCode == keyCodes.down) {
-                if (speed.y !== -1) {
+                if (speed.y == 0) {
                     speed.x = 0;
                     speed.y = 1;
+                    press = false;
                 }
             }
-            press = false;
         }
     })
 });
