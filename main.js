@@ -101,17 +101,16 @@ function extend (y0, x0) {
         if (!food) {
             $('#' + tail).attr('class', 'default');
         } else {
-            let cond = false;
-            while (!cond) {
-                let rand = {
-                    'y' : Math.floor(Math.random() * 10),
-                    'x' : Math.floor(Math.random() * 10)
-                }
-                let rnd = $('#' + rand.y + '_' + rand.x + '').attr('class');
-                if (rnd === 'default') {
-                    cond = true;
-                    $('#' + rand.y + '_' + rand.x + '').attr('class', 'food');
-                }
+            let n = $(".default").length;
+            if (n == 0) {
+                $('.body').css({
+                    'color': '#00ff00',
+                    'background-color': '#00ff00'
+                });
+                clearInterval(inter);
+            } else {
+                let rand = Math.floor(Math.random() * n);
+                $(".default").eq(rand).attr('class', 'food');
             }
         }
         $('#' + y + '_' + x + '').attr('class', 'head');
