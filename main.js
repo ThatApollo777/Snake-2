@@ -13,8 +13,8 @@ let count = 2;
 let press = true;
 
 $(document).ready(function () {
-    $('#0_0').html(1);
-    $('#0_1').html(2);
+    $('#1_1').html(1);
+    $('#1_2').html(2);
     $(document).on('keydown', function (k) {
         if (press) {
             if (k.keyCode == keyCodes.left) {
@@ -48,20 +48,9 @@ $(document).ready(function () {
 let inter = setInterval(() => {
     press = true;
     extend(position('head').y + speed.y, position('head').x + speed.x)
-}, 250);
+}, 150);
 
-function convert (no) {
-    if (no === -1) {
-        return 9;
-    } else if (no === 10) {
-        return 0;
-    } else {
-        return no;
-    }
-}
-function extend (y0, x0) {
-    let y = convert(y0);
-    let x = convert(x0);
+function extend (y, x) {
     let end = $('#' + y + '_' + x + '').attr('class');
     let body = [[], []];
     let data = document.getElementsByClassName('body');
@@ -70,22 +59,35 @@ function extend (y0, x0) {
         body[1].push(data[loop].id);
     }
     let tail = body[1][body[0].indexOf(Math.min(...body[0]))];
-    if (end === 'body' && (y != Number(tail.slice(0, 1)) || x != Number(tail.slice(2, 3)))) {
+    let tailPos = {
+        'y' : Number(tail.slice(0, 1)),
+        'x' : Number(tail.slice(2, 3))
+    };
+    if (!tail.slice(0, 2).includes('_')) {
+        tailPos.y = Number(tail.slice(0, 2));
+        if (tail.length == 4) {
+            tailPos.x = Number(tail.slice(3, 4));
+        } else {
+            tailPos.x = Number(tail.slice(3, 5));
+        }
+    } else if (tail.length == 4) {
+        tailPos.x = Number(tail.slice(2, 4));
+    }
+    if ((end === 'body' || end === 'wall') && (y != tailPos.y || x != tailPos.x)) {
         clearInterval(inter);
         $('.body').css({
-            'color': '#ff0000',
             'background-color': '#ff0000'
         });
         $('.head').css({
-            'color': '#000000',
             'background-color': '#000000'
         });
         $('.food').css({
-            'color': '#ffffff',
+            'background-color': '#ffffff'
+        });
+        $('.wall').css({
             'background-color': '#ffffff'
         });
         $('.default').css({
-            'color': '#ffffff',
             'background-color': '#ffffff'
         });
     } else {
@@ -104,8 +106,10 @@ function extend (y0, x0) {
             let n = $(".default").length;
             if (n == 0) {
                 $('.body').css({
-                    'color': '#00ff00',
                     'background-color': '#00ff00'
+                });
+                $('.wall').css({
+                    'background-color': '#ffffff'
                 });
                 clearInterval(inter);
             } else {
@@ -122,5 +126,15 @@ function position (name) {
         'y' : Number(pos.slice(0, 1)),
         'x' : Number(pos.slice(2, 3))
     };
+    if (!pos.slice(0, 2).includes('_')) {
+        ret.y = Number(pos.slice(0, 2));
+        if (pos.length == 4) {
+            ret.x = Number(pos.slice(3, 4));
+        } else {
+            ret.x = Number(pos.slice(3, 5));
+        }
+    } else if (pos.length == 4) {
+        ret.x = Number(pos.slice(2, 4));
+    }
     return ret;
 }

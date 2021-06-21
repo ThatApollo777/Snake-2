@@ -1,25 +1,23 @@
+* {
+    font-size: 0px;
+}
 table {
     height: 100%;
     width: 100%;
 }
-td {
-    height: 8%;
-    width: 8%;
-}
 
+.wall {
+    background-color: #9e6b0c;
+}
 .default {
-    color: #000000;
     background-color: #000000;
 }
 .food {
-    color: #ff0000;
     background-color: #ff0000;
 }
 .head {
-    color: #00ff00;
     background-color: #00ff00;
 }
 .body {
-    color: #0000ff;
     background-color: #0000ff;
 }
