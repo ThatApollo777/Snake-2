@@ -63,8 +63,31 @@ function extend (y0, x0) {
     let y = convert(y0);
     let x = convert(x0);
     let end = $('#' + y + '_' + x + '').attr('class');
-    if (end === 'body') {
+    let body = [[], []];
+    let data = document.getElementsByClassName('body');
+    for (let loop = 0; loop < data.length; loop++) {
+        body[0].push(Number(data[loop].innerText));
+        body[1].push(data[loop].id);
+    }
+    let tail = body[1][body[0].indexOf(Math.min(...body[0]))];
+    if (end === 'body' && (y != Number(tail.slice(0, 1)) || x != Number(tail.slice(2, 3)))) {
         clearInterval(inter);
+        $('.body').css({
+            'color': '#ff0000',
+            'background-color': '#ff0000'
+        });
+        $('.head').css({
+            'color': '#000000',
+            'background-color': '#000000'
+        });
+        $('.food').css({
+            'color': '#ffffff',
+            'background-color': '#ffffff'
+        });
+        $('.default').css({
+            'color': '#ffffff',
+            'background-color': '#ffffff'
+        });
     } else {
         let food = false;
         let status = $('#' + y + '_' + x + '').attr('class');
@@ -75,15 +98,8 @@ function extend (y0, x0) {
         let pos = position('head');
         $('.head').attr('class', 'body');
         $('#' + pos.y + '_' + pos.x + '').html(count);
-        $('#' + y + '_' + x + '').attr('class', 'head');
         if (!food) {
-            let body = [[], []];
-            let data = document.getElementsByClassName('body');
-            for (let loop = 0; loop < data.length; loop++) {
-                body[0].push(Number(data[loop].innerText));
-                body[1].push(data[loop].id);
-            }
-            $('#' + body[1][body[0].indexOf(Math.min(...body[0]))]).attr('class', 'default');
+            $('#' + tail).attr('class', 'default');
         } else {
             let cond = false;
             while (!cond) {
@@ -98,12 +114,14 @@ function extend (y0, x0) {
                 }
             }
         }
+        $('#' + y + '_' + x + '').attr('class', 'head');
     }
 }
 function position (name) {
     let pos = $('.' + name).attr('id');
-    return {
+    let ret = {
         'y' : Number(pos.slice(0, 1)),
         'x' : Number(pos.slice(2, 3))
     };
+    return ret;
 }
