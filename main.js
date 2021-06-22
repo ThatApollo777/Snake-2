@@ -9,12 +9,16 @@ let speed = {
     'x' : 1,
     'y' : 0
 }
-let count = 2;
 let press = true;
+let initialLength = 25;
+let count = initialLength - 1;
 
 $(document).ready(function () {
-    $('#1_1').html(1);
-    $('#1_2').html(2);
+    for (let loop = 1; loop < initialLength; loop++) {
+        $('#1_' + loop).html(loop);
+        $('#1_' + loop).attr('class', 'body');
+    }
+    $('#1_' + initialLength).attr('class', 'head');
     $(document).on('keydown', function (k) {
         if (press) {
             if (k.keyCode == keyCodes.left) {
