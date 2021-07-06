@@ -49,7 +49,7 @@ function extend (y, x) {
             'background-color': '#ffffff'
         });
         $('.wall').css({
-            'background-color': '#ffffff'
+            'background-color': '#000000'
         });
         $('.default').css({
             'background-color': '#ffffff'
@@ -79,6 +79,12 @@ function extend (y, x) {
             } else {
                 let rand = Math.floor(Math.random() * n);
                 $(".default").eq(rand).attr('class', 'food');
+                n--;
+                rand = Math.floor(Math.random() * n);
+                $(".default").eq(rand).attr('class', 'wall');
+                n--;
+                rand = Math.floor(Math.random() * n);
+                $(".default").eq(rand).attr('class', 'wall');
             }
         }
         $('#' + y + '_' + x + '').attr('class', 'head');
