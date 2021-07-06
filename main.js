@@ -9,78 +9,35 @@ let speed = {
     'x' : 1,
     'y' : 0
 }
-let press = true;
-let initialLength = 25;
-let count = initialLength - 1;
+let count = 23;
 
 $(document).ready(function () {
-    for (let loop = 1; loop < initialLength; loop++) {
+    for (let loop = 1; loop < (count + 1); loop++) {
         $('#1_' + loop).html(loop);
         $('#1_' + loop).attr('class', 'body');
     }
-    $('#1_' + initialLength).attr('class', 'head');
+    $('#1_' + (count + 1)).attr('class', 'head');
     $(document).on('keydown', function (k) {
-        if (press) {
-            if (k.keyCode == keyCodes.left) {
-                if (speed.x == 0) {
-                    speed.x = -1;
-                    speed.y = 0;
-                    press = false;
-                }
-            }
-            if (k.keyCode == keyCodes.up) {
-                if (speed.y == 0) {
-                    speed.x = 0;
-                    speed.y = -1;
-                    press = false;
-                }
-            }
-            if (k.keyCode == keyCodes.right) {
-                if (speed.x == 0) {
-                    speed.x = 1;
-                    speed.y = 0;
-                    press = false;
-                }
-            }
-            if (k.keyCode == keyCodes.down) {
-                if (speed.y == 0) {
-                    speed.x = 0;
-                    speed.y = 1;
-                    press = false;
-                }
-            }
+        if (k.keyCode == keyCodes.left) {
+            move(-1, 0);
+        }
+        if (k.keyCode == keyCodes.up) {
+            move(0, -1);
+        }
+        if (k.keyCode == keyCodes.right) {
+            move(1, 0);
+        }
+        if (k.keyCode == keyCodes.down) {
+            move(0, 1);
         }
     })
 });
-let inter = setInterval(() => {
-    press = true;
-    extend(position('head').y + speed.y, position('head').x + speed.x)
-}, 150);
+let inter = setInterval(() => {extend(position('head').y + speed.y, position('head').x + speed.x)}, 250);
 
 function extend (y, x) {
     let end = $('#' + y + '_' + x + '').attr('class');
-    let body = [[], []];
-    let data = document.getElementsByClassName('body');
-    for (let loop = 0; loop < data.length; loop++) {
-        body[0].push(Number(data[loop].innerText));
-        body[1].push(data[loop].id);
-    }
-    let tail = body[1][body[0].indexOf(Math.min(...body[0]))];
-    let tailPos = {
-        'y' : Number(tail.slice(0, 1)),
-        'x' : Number(tail.slice(2, 3))
-    };
-    if (!tail.slice(0, 2).includes('_')) {
-        tailPos.y = Number(tail.slice(0, 2));
-        if (tail.length == 4) {
-            tailPos.x = Number(tail.slice(3, 4));
-        } else {
-            tailPos.x = Number(tail.slice(3, 5));
-        }
-    } else if (tail.length == 4) {
-        tailPos.x = Number(tail.slice(2, 4));
-    }
-    if ((end === 'body' || end === 'wall') && (y != tailPos.y || x != tailPos.x)) {
+    let tail = position('tail');
+    if ((end === 'body' || end === 'wall') && (y != tail.y || x != tail.x)) {
         clearInterval(inter);
         $('.body').css({
             'background-color': '#ff0000'
@@ -108,7 +65,7 @@ function extend (y, x) {
         $('.head').attr('class', 'body');
         $('#' + pos.y + '_' + pos.x + '').html(count);
         if (!food) {
-            $('#' + tail).attr('class', 'default');
+            $('#' + tail.y + '_' + tail.x).attr('class', 'default');
         } else {
             let n = $(".default").length;
             if (n == 0) {
@@ -127,12 +84,26 @@ function extend (y, x) {
         $('#' + y + '_' + x + '').attr('class', 'head');
     }
 }
+
 function position (name) {
-    let pos = $('.' + name).attr('id');
+    let pos;
     let ret = {
-        'y' : Number(pos.slice(0, 1)),
-        'x' : Number(pos.slice(2, 3))
-    };
+        'y'  : 0,
+        'x'  : 0
+    }
+    if (name == 'tail') {
+        let body = [[], []];
+        let data = document.getElementsByClassName('body');
+        for (let loop = 0; loop < data.length; loop++) {
+            body[0].push(Number(data[loop].innerText));
+            body[1].push(data[loop].id);
+        }
+        pos = body[1][body[0].indexOf(Math.min(...body[0]))];
+    } else {
+        pos = $('.' + name).attr('id');
+    }
+    ret.y = Number(pos.slice(0, 1));
+    ret.x = Number(pos.slice(2, 3));
     if (!pos.slice(0, 2).includes('_')) {
         ret.y = Number(pos.slice(0, 2));
         if (pos.length == 4) {
@@ -144,4 +115,15 @@ function position (name) {
         ret.x = Number(pos.slice(2, 4));
     }
     return ret;
+}
+
+function move(x, y) {
+    let head = position('head');
+    let next = $('#' + (head.y + y) + '_' + (head.x + x) + '').attr('class');
+    let nextId = $('#' + (head.y + y) + '_' + (head.x + x) + '').attr('id');
+    let tailId = position('tail').y + '_' + position('tail').x;
+    if (((x == 0 && speed.y == 0) || (y == 0 && speed.x == 0)) && (next == 'default' || next == 'food' || nextId == tailId)) {
+        speed.x = x;
+        speed.y = y;
+    }
 }
