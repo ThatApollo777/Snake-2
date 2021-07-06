@@ -32,7 +32,7 @@ $(document).ready(function () {
         }
     })
 });
-let inter = setInterval(() => {extend(position('head').y + speed.y, position('head').x + speed.x)}, 250);
+let inter = setInterval(() => {extend(position('head').y + speed.y, position('head').x + speed.x)}, 150);
 
 function extend (y, x) {
     let end = $('#' + y + '_' + x + '').attr('class');
