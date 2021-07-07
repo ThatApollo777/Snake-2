@@ -9,14 +9,27 @@ let speed = {
     'x' : 1,
     'y' : 0
 }
-let count = 23;
+let count = 23, eaten = 1;
+const FN = 5, FA = 1, FD = 0.1, WN = 10, WA = 2, WM = 0.2;
+let loop, rand;
 
 $(document).ready(function () {
-    for (let loop = 1; loop < (count + 1); loop++) {
+    for (loop = 1; loop < (count + 1); loop++) {
         $('#1_' + loop).html(loop);
         $('#1_' + loop).attr('class', 'body');
     }
     $('#1_' + (count + 1)).attr('class', 'head');
+    let n = $(".default").length;
+    for (loop = 0; loop < FN; loop++) {
+        rand = Math.floor(Math.random() * n);
+        $(".default").eq(rand).attr('class', 'food');
+        n--;
+    }
+    for (loop = 0; loop < WN; loop++) {
+        rand = Math.floor(Math.random() * n);
+        $(".default").eq(rand).attr('class', 'wall');
+        n--;
+    }
     $(document).on('keydown', function (k) {
         if (k.keyCode == keyCodes.left) {
             move(-1, 0);
@@ -77,14 +90,19 @@ function extend (y, x) {
                 });
                 clearInterval(inter);
             } else {
-                let rand = Math.floor(Math.random() * n);
-                $(".default").eq(rand).attr('class', 'food');
-                n--;
-                rand = Math.floor(Math.random() * n);
-                $(".default").eq(rand).attr('class', 'wall');
-                n--;
-                rand = Math.floor(Math.random() * n);
-                $(".default").eq(rand).attr('class', 'wall');
+                for (loop = 0; loop < FA; loop++) {
+                    if ((FD * eaten) % 1 != 0 || eaten >= 50) {
+                        rand = Math.floor(Math.random() * n);
+                        $(".default").eq(rand).attr('class', 'food');
+                        n--;
+                    }
+                }
+                for (loop = 0; loop < (WA + WM * eaten); loop++) {
+                    rand = Math.floor(Math.random() * n);
+                    $(".default").eq(rand).attr('class', 'wall');
+                    n--;
+                }
+                eaten++;
             }
         }
         $('#' + y + '_' + x + '').attr('class', 'head');
